@@ -20,6 +20,17 @@ class Context
     $this->players[$role] = $object;
   }
 
+  /**
+   * remove the roles from the player objects
+   */
+  public function teardown()
+  {
+    foreach($this->players as $role => $object)
+    {
+      $object->withdrawRole($role);
+    }
+  }
+
 }
 class StdObj extends StdClass
 {
@@ -41,9 +52,20 @@ class StdObj extends StdClass
     return $this->context;
   }
 
+  public function roles()
+  {
+    return $this->roles;
+  }
+
   public function injectRole(Role $role)
   {
-    $this->roles[] = $role;
+    $this->roles[$role->name()] = $role;
+  }
+
+  public function withdrawRole($roleName)
+  {
+    $this->roles[$roleName] = null;
+    unset($this->roles[$roleName]);
   }
 
   public function __call($method, $args)
@@ -61,9 +83,7 @@ class StdObj extends StdClass
 class Role
 {
   protected $player = null;
-
-  protected $opts = array();
-
+  public    $name = 'role';
 
   public function __construct(StdObj $player)
   {
@@ -72,6 +92,10 @@ class Role
     $this->transferProperties();
   }
 
+  public function name()
+  {
+    return $this->name;
+  }
   /**
    * might throw exception
    */

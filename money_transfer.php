@@ -3,6 +3,7 @@ class MoneyTransfer extends Context
 {
   protected $fromAccount = null;
   protected $toAccount = null;
+  protected $transferAmount = 0;
 
   /**
    * setup + initiate execution of the use case
@@ -15,7 +16,12 @@ class MoneyTransfer extends Context
     }
     $this->delegateRole('fromAccount', $fromAccount);
     $this->delegateRole('toAccount', $toAccount);
-    $this->executeTransaction($transferAmount);
+    $this->transferAmount = ($transferAmount);
+  }
+
+  public function execute()
+  {
+    $this->executeTransaction($this->transferAmount);
   }
 
   /**
@@ -32,8 +38,7 @@ class MoneyTransfer extends Context
     {
       die('['.get_class().'] FAILED: '.$e->getMessage()."\n");
     }
-    echo "\ntransaction between fromAccount({$this->players['fromAccount']->identity})".
-     " and toAccount({$this->players['toAccount']->identity}) on amount({$amount})\n";
+    return true;
   }
 
 }
@@ -63,6 +68,7 @@ class Role_Account extends Role
  */
 class Role_FromAccount extends Role_Account
 {
+  public $name = 'fromAccount';
   public function credit($amount)
   {
     $this->currentAmount = ($this->currentAmount - $amount);
@@ -79,6 +85,7 @@ class Role_FromAccount extends Role_Account
  */
 class Role_ToAccount extends Role_Account
 {
+  public $name = 'toAccount';
   public function deposit($amount)
   {
     $this->currentAmount = $this->currentAmount + $amount;
