@@ -7,15 +7,15 @@ class MoneyTransfer extends Context
   /**
    * setup + initiate execution of the use case
    */
-  public function __construct($fromAccount, $toAccount, $amount)
+  public function __construct($fromAccount, $toAccount, $transferAmount)
   {
-    if ($amount < 0)
+    if ($transferAmount < 0)
     {
       throw new DCI_Exception('cant transfer negative founds');
     }
     $this->delegateRole('fromAccount', $fromAccount);
     $this->delegateRole('toAccount', $toAccount);
-    $this->executeTransaction($amount);
+    $this->executeTransaction($transferAmount);
   }
 
   /**
@@ -47,14 +47,14 @@ class Role_Account extends Role
   public $amount = 0;
   public function constraints()
   {
-    if ( ! isset($this->player->amount) ) {
-      throw new DCI_Exception('the player doesnt have the amount property, cant play this role');
+    if ( ! isset($this->player->currentAmount) ) {
+      throw new DCI_Exception('the player doesnt have the currentAmount property, cant play this role');
     }
   }
 
   public function transferProperties()
   {
-    $this->amount = $this->player->amount;
+    $this->currentAmount = $this->player->currentAmount;
   }
 }
 
@@ -65,12 +65,12 @@ class Role_FromAccount extends Role_Account
 {
   public function credit($amount)
   {
-    $this->amount = ($this->amount - $amount);
-    if ($this->amount < 0)
+    $this->currentAmount = ($this->currentAmount - $amount);
+    if ($this->currentAmount < 0)
     {
       throw new DCI_Exception('unable go credit on the from account');
     }
-    $this->updateProperty('amount');
+    $this->updateProperty('currentAmount');
   }
 }
 
@@ -81,7 +81,7 @@ class Role_ToAccount extends Role_Account
 {
   public function deposit($amount)
   {
-    $this->amount = $this->amount + $amount;
-    $this->updateProperty('amount');
+    $this->currentAmount = $this->currentAmount + $amount;
+    $this->updateProperty('currentAmount');
   }
 }
