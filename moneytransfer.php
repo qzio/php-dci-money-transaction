@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__.'/dci_classes.php'; // base clases to use when doing dci
+
 class MoneyTransfer extends Context
 {
   protected $fromAccount = null;
@@ -43,13 +45,12 @@ class MoneyTransfer extends Context
 
 }
 
-
 /**
  * base account, stuff that are to be used in all account roles
  */
 class Role_Account extends Role
 {
-  public $amount = 0;
+  public $currentAmount = 0;
   public function constraints()
   {
     if ( ! isset($this->player->currentAmount) ) {

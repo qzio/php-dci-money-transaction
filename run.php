@@ -1,8 +1,9 @@
 #!/usr/bin/env php
 <?php
 echo "starting\n";
-require_once __DIR__.'/bootstrap.php';
+require_once __DIR__.'/moneytransfer.php';
 
+// just a debug function to show roles
 function show_roles($object)
 {
   $roles = array_map(function($o){return $o->name();}, $object->roles());
